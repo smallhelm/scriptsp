@@ -1,0 +1,39 @@
+#!/usr/bin/env node
+
+var isArray = require('x-is-array');
+var scriptsP = require('../index');
+
+if(process.argv.length !== 3){
+  console.log('USAGE: scriptsp [script]');
+  process.exit(0);
+}
+
+var errorOut = function(msg){
+  console.error('[error]', msg);
+  process.exit(1);
+};
+
+try{
+  var package_json = require(process.cwd() + '/package.json');
+}catch(e){
+  errorOut('must be run in the same working directory as your package.json');
+}
+var scripts = (package_json && package_json.scripts) || {};
+
+var script_to_run = process.argv[2];
+
+var assertIsAScript = function(script){
+  if(!scripts.hasOwnProperty(script)){
+    errorOut('"' + script + '" not found in package.json > scripts');
+  }
+};
+
+assertIsAScript(script_to_run);
+
+if(!isArray(scripts[script_to_run])){
+  errorOut('"' + script_to_run + '" is not an array');
+}
+
+scripts[script_to_run].forEach(assertIsAScript);
+
+scriptsP(scripts[script_to_run]);

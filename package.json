@@ -1,0 +1,36 @@
+{
+  "name": "scriptsp",
+  "version": "0.0.0",
+  "description": "Run multiple package.json scripts in parallel (for development)",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smallhelm/scriptsp.git"
+  },
+  "keywords": [
+    "task",
+    "tool",
+    "package.json",
+    "parallel",
+    "npm"
+  ],
+  "author": "smallhelm",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/smallhelm/scriptsp/issues"
+  },
+  "homepage": "https://github.com/smallhelm/scriptsp#readme",
+  "scripts": {
+    "dev:server": "echo \"da\" && sleep 1 && echo \"server\"",
+    "dev:client": "echo \"da\" && sleep 1 && echo \"client\"",
+    "dev": [
+      "dev:server",
+      "dev:client"
+    ]
+  },
+  "dependencies": {
+    "chalk": "1.0.0",
+    "lodash": "3.9.3",
+    "x-is-array": "0.1.0"
+  }
+}
