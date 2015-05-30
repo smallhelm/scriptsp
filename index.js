@@ -46,16 +46,16 @@ var toScriptNamesToTasks = function(npm_script_names){
       script_name: npm_script_names[i],
       colorFn: colorFn,
       prefixer: function(){
-        return colorFn((new Date()).toString().substr(16, 8) + ' '  + _.repeat(' ', pad_len - task_id.length) + task_id + ' | ');
+        return colorFn((new Date()).toString().substr(16, 8) + ' ' + task_id  + _.repeat(' ', pad_len - task_id.length) + ' | ');
       }
     }];
   }));
 };
 
 var toLines = function(str){
-  return _.reject(_.map(String(str && str.toString()).split("\n"), function(line){
-    return line.trim();
-  }), _.isEmpty);
+  return _.reject(String(str && str.toString()).split("\n"), function(line){
+    return line.trim().length === 0;
+  });
 };
 
 module.exports = function(npm_script_names){

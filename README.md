@@ -22,6 +22,7 @@ run it
 ```sh
 $ npm run dev
 ```
+![scriptsp demo](https://raw.githubusercontent.com/smallhelm/scriptsp/master/demo.png)
 
 # License
 

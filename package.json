@@ -28,12 +28,16 @@
   },
   "homepage": "https://github.com/smallhelm/scriptsp#readme",
   "scripts": {
-    "test": "npm run dev;npm run dev2;npm run devE;npm run colors",
+    "test": "npm run dev1;npm run dev2;npm run devE;npm run colors",
+    "dev-server": "node -e \"console.log(\\\"[nodemon] \\u001b[32mstarting 'node src/server.js'\\u001b[39m\\\");setInterval(function(){console.log(\\\"[nodemon] \\u001b[32mrestarting due to changes...\\u001b[39m\\\")}, 1100)\"",
+    "watch-test": "node -e \"setInterval(function(){console.log(\\\"........\\n8 tests passed\\\")}, 1000)\"",
+    "watch-js": "node -e \"setInterval(function(){console.error('1234567 bytes written to public/bundle.js (0.50 seconds)')}, 1000)\"",
     "dev:server": "echo \"da\" && sleep 1 && echo \"server\"",
     "dev:client": "echo \"da\" && sleep 1 && echo \"client\"",
     "dev:test": "echo \"da\" && sleep 1 && echo \"test\"",
     "dev:error": "echo \"da\" && sleep 1 && echo \"foo\" 1>&2; exit 1",
-    "dev": "bin/scriptsp dev:server dev:test dev:client",
+    "dev": "bin/scriptsp dev-server watch-test watch-js",
+    "dev1": "bin/scriptsp dev:server dev:test dev:client",
     "dev2": "bin/scriptsp dev:server dev:server dev:server dev:test dev:client",
     "devE": "bin/scriptsp dev:test dev:error",
     "colors": "bin/scriptsp dev:server dev:server dev:server dev:server dev:server dev:server dev:server dev:server dev:test dev:test dev:test dev:test dev:test dev:test dev:client dev:client dev:client dev:client dev:client"
