@@ -35,6 +35,28 @@
       "dev:server",
       "dev:bot",
       "dev:client"
+    ],
+    "colors": [
+      "dev:server",
+      "dev:server",
+      "dev:server",
+      "dev:server",
+      "dev:server",
+      "dev:server",
+      "dev:server",
+      "dev:server",
+      "dev:bot",
+      "dev:bot",
+      "dev:bot",
+      "dev:bot",
+      "dev:bot",
+      "dev:bot",
+      "dev:client",
+      "dev:client",
+      "dev:client",
+      "dev:client",
+      "dev:client",
+      "dev:client"
     ]
   },
   "dependencies": {

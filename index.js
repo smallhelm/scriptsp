@@ -2,8 +2,8 @@ var _ = require('lodash');
 var chalk = require('chalk');
 var spawn = require('child_process').spawn;
 
-var getNextStyle = (function(){
-  var styles = [
+var getNextColorFn = (function(){
+  var colors = [
     'green',
     'yellow',
     'blue',
@@ -14,15 +14,15 @@ var getNextStyle = (function(){
   var i = -1;
   return function(){
     i++;
-    if(i >= styles.length){
+    if(i >= colors.length){
       i = 0;
     }
-    return chalk[styles[i]];
+    return chalk[colors[i]];
   };
 }());
 
 var hasDuplicats = function(names){
-  return _.size(names) !== _.unique(names).length;
+  return names.length !== _.unique(names).length;
 };
 
 var toTaskIDs = function(names){
@@ -36,16 +36,20 @@ var toTaskIDs = function(names){
   });
 };
 
-var makePrefixers = function(names){
-  var task_ids = toTaskIDs(names);
+var toScriptNamesToTasks = function(npm_script_names){
+  var task_ids = toTaskIDs(npm_script_names);
   var pad_len = _.max(_.map(task_ids, _.size));
 
-  return _.mapValues(task_ids, function(task_id){
-    var style = getNextStyle();
-    return function(){
-      return style((new Date()).toString().substr(16, 8) + ' '  + _.repeat(' ', pad_len - task_id.length) + task_id + ' | ');
-    };
-  });
+  return _.object(_.map(task_ids, function(task_id, i){
+    var colorFn = getNextColorFn();
+    return [task_id, {
+      script_name: npm_script_names[i],
+      colorFn: colorFn,
+      prefixer: function(){
+        return colorFn((new Date()).toString().substr(16, 8) + ' '  + _.repeat(' ', pad_len - task_id.length) + task_id + ' | ');
+      }
+    }];
+  }));
 };
 
 var toLines = function(str){
@@ -54,52 +58,48 @@ var toLines = function(str){
   }), _.isEmpty);
 };
 
-module.exports = function(npm_tasks){
-  var prefixers = makePrefixers(npm_tasks);
+module.exports = function(npm_script_names){
+  var tasks = toScriptNamesToTasks(npm_script_names);
 
-  var spawned_tasks = {};
-
-  _.each(npm_tasks, function(task, id){
-    var prefixer = prefixers[id];
-
-    var spawned = spawned_tasks[id] = spawn('npm', ['run', task], {
+  _.each(tasks, function(task, task_id){
+    task.proc = spawn('npm', ['run', task.script_name], {
       env: process.env
     }).on('close', function(code){
-      delete spawned_tasks[id];
+      task.done = true;
       code = code ? (code.code || code) : code;
       if(code !== 0){
         console.log('********');
-        console.log('****', chalk.red('exited with error'), code, prefixer());
+        console.log('****', task.colorFn(task_id), chalk.green('exited with error'), code);
         console.log('********');
       }else{
         console.log('********');
-        console.log('****', prefixer(), chalk.green('finished'), code);
+        console.log('****', task.colorFn(task_id), 'finished');
         console.log('********');
       }
     });
-    spawned.stdout.on('data', function(data){
+    task.proc.stdout.on('data', function(data){
       _.each(toLines(data), function(line){
-        console.log(prefixer(), line);
+        console.log(task.prefixer(), line);
       });
     });
-    spawned.stderr.on('data', function(data){
+    task.proc.stderr.on('data', function(data){
       _.each(toLines(data), function(line){
-        console.log(prefixer(), chalk.red(line));
+        console.error(task.prefixer(), chalk.red(line));
       });
     });
   });
 
   process.on('SIGINT', function(){
-    _.each(spawned_tasks, function(task, id){
-      task.removeAllListeners('close');
-      task.kill('SIGINT');
-      console.log('********');
-      console.log('**** killing ', prefixers[id]());
-      console.log('********');
+    console.log("\n***************************************");
+    _.each(tasks, function(task, task_id){
+      if(task.done){
+        return;
+      }
+      task.proc.removeAllListeners('close');
+      task.proc.kill('SIGINT');
+      console.log('**** killing ', task.colorFn(task_id));
     });
-    console.log('********');
     console.log('**** good bye');
-    console.log('********');
     process.exit(0);
   });
 };
