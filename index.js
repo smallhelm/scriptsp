@@ -21,13 +21,29 @@ var getNextStyle = (function(){
   };
 }());
 
-var makePrefixers = function(names){
-  var pad_len = _.max(_.map(names, _.size));
+var hasDuplicats = function(names){
+  return _.size(names) !== _.unique(names).length;
+};
 
-  return _.mapValues(names, function(name, id){
+var toTaskIDs = function(names){
+  if(!hasDuplicats(names)){
+    return names;
+  }
+  var next_i_for = {};
+  return _.map(names, function(name){
+    next_i_for[name] = _.has(next_i_for, name) ? next_i_for[name] + 1 : 0;
+    return name + '.' + next_i_for[name];
+  });
+};
+
+var makePrefixers = function(names){
+  var task_ids = toTaskIDs(names);
+  var pad_len = _.max(_.map(task_ids, _.size));
+
+  return _.mapValues(task_ids, function(task_id){
     var style = getNextStyle();
     return function(){
-      return style((new Date()).toString().substr(16, 8) + ' '  + _.repeat(' ', pad_len - name.length) + name + ' | ');
+      return style((new Date()).toString().substr(16, 8) + ' '  + _.repeat(' ', pad_len - task_id.length) + task_id + ' | ');
     };
   });
 };

@@ -23,8 +23,17 @@
   "scripts": {
     "dev:server": "echo \"da\" && sleep 1 && echo \"server\"",
     "dev:client": "echo \"da\" && sleep 1 && echo \"client\"",
+    "dev:bot": "echo \"da\" && sleep 1 && echo \"bot\"",
     "dev": [
       "dev:server",
+      "dev:bot",
+      "dev:client"
+    ],
+    "dev2": [
+      "dev:server",
+      "dev:server",
+      "dev:server",
+      "dev:bot",
       "dev:client"
     ]
   },
