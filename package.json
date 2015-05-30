@@ -1,6 +1,6 @@
 {
   "name": "scriptsp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Run multiple package.json scripts in parallel (for development)",
   "main": "index.js",
   "bin": {
@@ -28,53 +28,18 @@
   },
   "homepage": "https://github.com/smallhelm/scriptsp#readme",
   "scripts": {
-    "test": "bin/scriptsp dev;bin/scriptsp dev2;bin/scriptsp error;bin/scriptsp colors",
+    "test": "npm run dev;npm run dev2;npm run devE;npm run colors",
     "dev:server": "echo \"da\" && sleep 1 && echo \"server\"",
     "dev:client": "echo \"da\" && sleep 1 && echo \"client\"",
-    "dev:bot": "echo \"da\" && sleep 1 && echo \"bot\"",
-    "dev": [
-      "dev:server",
-      "dev:bot",
-      "dev:client"
-    ],
-    "dev2": [
-      "dev:server",
-      "dev:server",
-      "dev:server",
-      "dev:bot",
-      "dev:client"
-    ],
-    "error": [
-      "dev",
-      "dev2",
-      "colors"
-    ],
-    "colors": [
-      "dev:server",
-      "dev:server",
-      "dev:server",
-      "dev:server",
-      "dev:server",
-      "dev:server",
-      "dev:server",
-      "dev:server",
-      "dev:bot",
-      "dev:bot",
-      "dev:bot",
-      "dev:bot",
-      "dev:bot",
-      "dev:bot",
-      "dev:client",
-      "dev:client",
-      "dev:client",
-      "dev:client",
-      "dev:client",
-      "dev:client"
-    ]
+    "dev:test": "echo \"da\" && sleep 1 && echo \"test\"",
+    "dev:error": "echo \"da\" && sleep 1 && echo \"foo\" 1>&2; exit 1",
+    "dev": "bin/scriptsp dev:server dev:test dev:client",
+    "dev2": "bin/scriptsp dev:server dev:server dev:server dev:test dev:client",
+    "devE": "bin/scriptsp dev:test dev:error",
+    "colors": "bin/scriptsp dev:server dev:server dev:server dev:server dev:server dev:server dev:server dev:server dev:test dev:test dev:test dev:test dev:test dev:test dev:client dev:client dev:client dev:client dev:client"
   },
   "dependencies": {
     "chalk": "1.0.0",
-    "lodash": "3.9.3",
-    "x-is-array": "0.1.0"
+    "lodash": "3.9.3"
   }
 }

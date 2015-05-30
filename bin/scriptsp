@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 
-var isArray = require('x-is-array');
 var scriptsP = require('../index');
 
-if(process.argv.length !== 3){
-  console.log('USAGE: scriptsp [script]');
+var npm_script_names = process.argv.slice(2);
+
+if(npm_script_names.length === 0){
+  console.log('USAGE: scriptsp [script1] [script2] ...');
+  console.log('i.e.');
+  console.log('  $ scriptsp start test watch-js');
   process.exit(0);
 }
 
@@ -20,20 +23,10 @@ try{
 }
 var scripts = (package_json && package_json.scripts) || {};
 
-var script_to_run = process.argv[2];
-
-var assertIsAScript = function(script){
+npm_script_names.forEach(function(script){
   if(!scripts.hasOwnProperty(script)){
     errorOut('"' + script + '" not found in package.json scripts');
   }
-};
+});
 
-assertIsAScript(script_to_run);
-
-if(!isArray(scripts[script_to_run])){
-  errorOut('"' + script_to_run + '" is not an array');
-}
-
-scripts[script_to_run].forEach(assertIsAScript);
-
-scriptsP(scripts[script_to_run]);
+scriptsP(npm_script_names);

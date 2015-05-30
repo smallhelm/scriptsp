@@ -14,12 +14,7 @@ package.json
     "watch-test": "...some test watching script...",
     "watch-js": "watchify ...",
 
-    "dev": "scriptsp dev-scripts",
-    "dev-scripts": [
-      "dev-server",
-      "watch-test",
-      "watch-js"
-    ]
+    "dev": "scriptsp dev-server watch-test watch-js"
   }
   ...
 ```
