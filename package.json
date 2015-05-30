@@ -1,8 +1,15 @@
 {
   "name": "scriptsp",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Run multiple package.json scripts in parallel (for development)",
   "main": "index.js",
+  "bin": {
+    "scriptsp": "bin/scriptsp"
+  },
+  "files": [
+    "bin",
+    "index.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/smallhelm/scriptsp.git"
