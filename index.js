@@ -27,9 +27,15 @@ var makePrefixers = function(names){
   return _.mapValues(names, function(name, id){
     var style = getNextStyle();
     return function(){
-      return style((new Date()).toString().substr(16, 8) + ' ['  + _.repeat(' ', pad_len - name.length) + name + ']');
+      return style((new Date()).toString().substr(16, 8) + ' '  + _.repeat(' ', pad_len - name.length) + name + ' | ');
     };
   });
+};
+
+var toLines = function(str){
+  return _.reject(_.map(String(str && str.toString()).split("\n"), function(line){
+    return line.trim();
+  }), _.isEmpty);
 };
 
 module.exports = function(npm_tasks){
@@ -40,32 +46,44 @@ module.exports = function(npm_tasks){
   _.each(npm_tasks, function(task, id){
     var prefixer = prefixers[id];
 
-    spawned_tasks[id] = spawn('npm', ['run', task], {
-      cwd: process.cwd,
-      env: process.env,
-      stdio: [
-        0,
-        process.stdout,
-        process.stderr
-      ]
+    var spawned = spawned_tasks[id] = spawn('npm', ['run', task], {
+      env: process.env
     }).on('close', function(code){
       delete spawned_tasks[id];
       code = code ? (code.code || code) : code;
       if(code !== 0){
+        console.log('********');
         console.log('****', chalk.red('exited with error'), code, prefixer());
+        console.log('********');
       }else{
-        console.log('****', chalk.green('finished'), code, prefixer());
+        console.log('********');
+        console.log('****', prefixer(), chalk.green('finished'), code);
+        console.log('********');
       }
+    });
+    spawned.stdout.on('data', function(data){
+      _.each(toLines(data), function(line){
+        console.log(prefixer(), line);
+      });
+    });
+    spawned.stderr.on('data', function(data){
+      _.each(toLines(data), function(line){
+        console.log(prefixer(), chalk.red(line));
+      });
     });
   });
 
-  process.on('SIGINT', function(code){
+  process.on('SIGINT', function(){
     _.each(spawned_tasks, function(task, id){
       task.removeAllListeners('close');
       task.kill('SIGINT');
+      console.log('********');
       console.log('**** killing ', prefixers[id]());
+      console.log('********');
     });
+    console.log('********');
     console.log('**** good bye');
-    process.exit(code);
+    console.log('********');
+    process.exit(0);
   });
 };

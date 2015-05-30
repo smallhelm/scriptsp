@@ -24,7 +24,7 @@ var script_to_run = process.argv[2];
 
 var assertIsAScript = function(script){
   if(!scripts.hasOwnProperty(script)){
-    errorOut('"' + script + '" not found in package.json > scripts');
+    errorOut('"' + script + '" not found in package.json scripts');
   }
 };
 
