@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/smallhelm/scriptsp#readme",
   "scripts": {
+    "test": "bin/scriptsp dev;bin/scriptsp dev2;bin/scriptsp error;bin/scriptsp colors",
     "dev:server": "echo \"da\" && sleep 1 && echo \"server\"",
     "dev:client": "echo \"da\" && sleep 1 && echo \"client\"",
     "dev:bot": "echo \"da\" && sleep 1 && echo \"bot\"",
@@ -35,6 +36,11 @@
       "dev:server",
       "dev:bot",
       "dev:client"
+    ],
+    "error": [
+      "dev",
+      "dev2",
+      "colors"
     ],
     "colors": [
       "dev:server",

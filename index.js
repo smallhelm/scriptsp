@@ -69,7 +69,7 @@ module.exports = function(npm_script_names){
       code = code ? (code.code || code) : code;
       if(code !== 0){
         console.log('********');
-        console.log('****', task.colorFn(task_id), chalk.green('exited with error'), code);
+        console.log('****', task.colorFn(task_id), chalk.red('exited with error'), code);
         console.log('********');
       }else{
         console.log('********');
