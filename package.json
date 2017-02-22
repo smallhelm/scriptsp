@@ -1,6 +1,6 @@
 {
   "name": "scriptsp",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Run multiple package.json scripts in parallel (for development)",
   "main": "index.js",
   "bin": {
