@@ -63,7 +63,8 @@ module.exports = function(npm_script_names, raw){
 
   _.each(tasks, function(task, task_id){
     task.proc = spawn('npm', ['run', task.script_name], {
-      env: process.env
+      env: process.env,
+      stdio: raw ? 'inherit' : 'pipe'
     }).on('close', function(code){
       task.done = true;
       if(raw){
@@ -81,8 +82,6 @@ module.exports = function(npm_script_names, raw){
       }
     });
     if(raw){
-      task.proc.stdout.pipe(process.stdout);
-      task.proc.stderr.pipe(process.stderr);
       return;
     }
     task.proc.stdout.on('data', function(data){
