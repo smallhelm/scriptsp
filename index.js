@@ -58,7 +58,7 @@ var toLines = function(str){
   });
 };
 
-module.exports = function(npm_script_names){
+module.exports = function(npm_script_names, raw){
   var tasks = toScriptNamesToTasks(npm_script_names);
 
   _.each(tasks, function(task, task_id){
@@ -66,6 +66,9 @@ module.exports = function(npm_script_names){
       env: process.env
     }).on('close', function(code){
       task.done = true;
+      if(raw){
+          return;
+      }
       code = code ? (code.code || code) : code;
       if(code !== 0){
         console.log('********');
@@ -77,6 +80,11 @@ module.exports = function(npm_script_names){
         console.log('********');
       }
     });
+    if(raw){
+      task.proc.stdout.pipe(process.stdout);
+      task.proc.stderr.pipe(process.stderr);
+      return;
+    }
     task.proc.stdout.on('data', function(data){
       _.each(toLines(data), function(line){
         console.log(task.prefixer(), line);
@@ -90,6 +98,9 @@ module.exports = function(npm_script_names){
   });
 
   process.on('SIGINT', function(){
+    if(raw){
+        return;
+    }
     console.log("\n***************************************");
     _.each(tasks, function(task, task_id){
       if(task.done){

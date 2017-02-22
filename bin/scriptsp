@@ -2,15 +2,6 @@
 
 var scriptsP = require('../index');
 
-var npm_script_names = process.argv.slice(2);
-
-if(npm_script_names.length === 0){
-  console.log('USAGE: scriptsp [script1] [script2] ...');
-  console.log('i.e.');
-  console.log('  $ scriptsp start test watch-js');
-  process.exit(0);
-}
-
 var errorOut = function(msg){
   console.error('[error]', msg);
   process.exit(1);
@@ -23,10 +14,32 @@ try{
 }
 var scripts = (package_json && package_json.scripts) || {};
 
-npm_script_names.forEach(function(script){
+var raw = false;
+var npm_script_names = [];
+
+process.argv.slice(2).forEach(function(script){
+  if(script === "-r" || script === "--raw"){
+    raw = true;
+    return;
+  }
   if(!scripts.hasOwnProperty(script)){
     errorOut('"' + script + '" not found in package.json scripts');
+    return;
   }
+  npm_script_names.push(script);
 });
 
-scriptsP(npm_script_names);
+if(npm_script_names.length === 0){
+  console.log();
+  console.log("USAGE: scriptsp [--raw] <script1> <script2> ...");
+  console.log();
+  console.log("    -r, --raw");
+  console.log("        simply pipe the output from the scripts, no fancy output stuff");
+  console.log();
+  console.log("i.e.");
+  console.log("    $ scriptsp start test watch-js");
+  console.log();
+  process.exit(0);
+}
+
+scriptsP(npm_script_names, raw);
