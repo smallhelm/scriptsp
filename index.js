@@ -22,7 +22,7 @@ var getNextColorFn = (function () {
 }())
 
 var hasDuplicats = function (names) {
-  return names.length !== _.unique(names).length
+  return names.length !== _.uniq(names).length
 }
 
 var toTaskIDs = function (names) {
@@ -40,7 +40,7 @@ var toScriptNamesToTasks = function (npmScriptNames) {
   var taskIds = toTaskIDs(npmScriptNames)
   var padLen = _.max(_.map(taskIds, _.size))
 
-  return _.object(_.map(taskIds, function (taskId, i) {
+  return _.fromPairs(_.map(taskIds, function (taskId, i) {
     var colorFn = getNextColorFn()
     return [taskId, {
       script_name: npmScriptNames[i],
